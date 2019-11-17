@@ -31,6 +31,7 @@ public class MaterialButtonProcess extends LinearLayout /*implements ProgressBut
     private TextView button_text;
     OnClickListener listener;
     private ProgressButtonListener listenerprogress;
+    private String currentText;
 
     public void setProgressButtonListener(ProgressButtonListener listener) {
         this.listenerprogress = listener;
@@ -84,13 +85,19 @@ public class MaterialButtonProcess extends LinearLayout /*implements ProgressBut
         setType(view);
         for (int i=0; i<a.getIndexCount();i++){
             int attr = a.getIndex(i);
-            if (attr == R.styleable.MaterialButtonProcess_setText) {
+            if (attr == R.styleable.MaterialButtonProcess_text) {
                 setText(a.getString(attr));
-            } else if (attr == R.styleable.MaterialButtonProcess_setBg) {
+            } /*else if (attr == R.styleable.MaterialButtonProcess_backgroundColor) {
                 setBackgroundColor(a.getColorStateList(attr));
-            } else if (attr == R.styleable.MaterialButtonProcess_setIcon) {
+            }*/ else if (attr == R.styleable.MaterialButtonProcess_icon) {
                 setVectorIcon(a.getResourceId(attr, R.drawable.ic_assistant_black_24dp));
-            } else if (attr == R.styleable.MaterialButtonProcess_setFont) {//setFont(a.getString(attr));
+            } else if (attr == R.styleable.MaterialButtonProcess_textColor) {
+                //setFont(a.getString(attr));
+                setTextColor(String.valueOf(a.getColorStateList(attr)));
+            } else if (attr == R.styleable.MaterialButtonProcess_iconColor) {
+                setColorIcon(/*String.valueOf(a.getColorStateList(attr))*/a.getColor(attr,0));
+            } else if (attr == R.styleable.MaterialButtonProcess_progressColor) {
+                setProgressColor(a.getColor(attr, 0));
             }
         }
         a.recycle();
@@ -152,26 +159,35 @@ public class MaterialButtonProcess extends LinearLayout /*implements ProgressBut
     }
 
     public void start() {
+        currentText = button_text.getText().toString();
+        button_text.setText("Proccessing");
         button_progress.setVisibility(View.VISIBLE);
     }
 
     public void stop() {
         button_progress.setVisibility(View.GONE);
+        button_text.setText(currentText);
     }
-    public void process(boolean isVisible) {
+    /*public void process(boolean isVisible) {
         if (isVisible) {
             button_progress.setVisibility(View.VISIBLE);
         } else {
             button_progress.setVisibility(View.GONE);
         }
-    }
+    }*/
 
-    public void setProgressColor(String color) {
-        button_progress.getIndeterminateDrawable().setColorFilter(Color.parseColor(color), android.graphics.PorterDuff.Mode.MULTIPLY);
+    public void setProgressColor(int color) {
+        button_progress.getIndeterminateDrawable().setColorFilter(color, android.graphics.PorterDuff.Mode.MULTIPLY);
+
     }
 
     public void setIconColor(String color) {
-        button_icon.setColorFilter(Color.parseColor(color), android.graphics.PorterDuff.Mode.SRC_IN);
+        button_icon.setColorFilter(Color.parseColor(color)/*, android.graphics.PorterDuff.Mode.SRC_IN*/);
+    }
+
+    public void setColorIcon(int color) {
+        //button_icon.setColorFilter(colorStateList);
+        button_icon.setColorFilter(color);
     }
 
     public void setTextColor(String color){

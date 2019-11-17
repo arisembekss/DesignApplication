@@ -10,6 +10,13 @@
     <com.dtech.customui.buttonprocess.MaterialButtonProcess
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:setText="Test Button"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:background="@drawable/rounded_bg"
+        app:text="Test Button"
+        app:icon="@drawable/ic_send"
+        app:iconColor="@color/black"
+        app:progressColor="@color/black"
+
         android:id="@+id/btp"/>
 </RelativeLayout>
