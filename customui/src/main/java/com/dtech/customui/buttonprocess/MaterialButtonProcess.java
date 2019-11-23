@@ -7,8 +7,10 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,7 +27,7 @@ import com.dtech.customui.R;
 
 public class MaterialButtonProcess extends LinearLayout /*implements ProgressButtonListener, View.OnClickListener*/ {
     private CardView button_style_parent;
-    private RelativeLayout button_click_parent;
+    private RelativeLayout button_click_parent, button_root;
     private ImageView button_icon;
     private ProgressBar button_progress;
     private TextView button_text;
@@ -83,6 +85,11 @@ public class MaterialButtonProcess extends LinearLayout /*implements ProgressBut
         addView(view);
         //setOnClickListener((OnClickListener) this);
         setType(view);
+        /*todo: last activity*/
+        if (/*typedValue.resourceId != 0*/this.getBackground() == null) {
+            Log.d("LIB", "init: user set bg");
+            setBackgroundroot(getResources().getDrawable(R.drawable.rounded2, null));
+        }
         for (int i=0; i<a.getIndexCount();i++){
             int attr = a.getIndex(i);
             if (attr == R.styleable.MaterialButtonProcess_text) {
@@ -90,10 +97,10 @@ public class MaterialButtonProcess extends LinearLayout /*implements ProgressBut
             } /*else if (attr == R.styleable.MaterialButtonProcess_backgroundColor) {
                 setBackgroundColor(a.getColorStateList(attr));
             }*/ else if (attr == R.styleable.MaterialButtonProcess_icon) {
-                setVectorIcon(a.getResourceId(attr, R.drawable.ic_assistant_black_24dp));
+                setVectorIcon(a.getResourceId(attr, 0));
             } else if (attr == R.styleable.MaterialButtonProcess_textColor) {
                 //setFont(a.getString(attr));
-                setTextColor(String.valueOf(a.getColorStateList(attr)));
+                setTextColor(a.getColor(attr, 0));
             } else if (attr == R.styleable.MaterialButtonProcess_iconColor) {
                 setColorIcon(/*String.valueOf(a.getColorStateList(attr))*/a.getColor(attr,0));
             } else if (attr == R.styleable.MaterialButtonProcess_progressColor) {
@@ -101,6 +108,19 @@ public class MaterialButtonProcess extends LinearLayout /*implements ProgressBut
             }
         }
         a.recycle();
+    }
+
+    public void setView(boolean emboss) {
+        View view;
+        removeAllViews();
+        if (emboss) {
+            view = inflate(getContext(), R.layout.emboss_process_button, null);
+        } else {
+            view = inflate(getContext(), R.layout.material_process_button, null);
+        }
+        addView(view);
+        //setOnClickListener((OnClickListener) this);
+        setType(view);
     }
 
     /*public MaterialButtonProcess(Context context) {
@@ -114,12 +134,12 @@ public class MaterialButtonProcess extends LinearLayout /*implements ProgressBut
     }*/
 
     private void setType(View view) {
+        button_root = view.findViewById(R.id.button_root);
         button_style_parent = view.findViewById(R.id.button_style_parent);
         button_click_parent = view.findViewById(R.id.button_click_parent);
         button_icon = view.findViewById(R.id.button_icon);
         button_progress = view.findViewById(R.id.button_progress);
         button_text = view.findViewById(R.id.button_text);
-
     }
 
     public RelativeLayout getButton() {
@@ -140,6 +160,10 @@ public class MaterialButtonProcess extends LinearLayout /*implements ProgressBut
 
     public void setVectorIcon(int iconId) {
         button_icon.setImageResource(iconId);
+    }
+
+    public void setBackgroundroot(Drawable resource) {
+        button_root.setBackground(resource);
     }
 
     public void setRadiusPixel(int radius) {
@@ -190,8 +214,8 @@ public class MaterialButtonProcess extends LinearLayout /*implements ProgressBut
         button_icon.setColorFilter(color);
     }
 
-    public void setTextColor(String color){
-        button_text.setTextColor(Color.parseColor(color));
+    public void setTextColor(int color){
+        button_text.setTextColor(color);
     }
 
     /*@Override

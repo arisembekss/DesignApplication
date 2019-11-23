@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements ItemAdapter.ItemS
 
     private void initUi() {
         buttonProcess = findViewById(R.id.btp);
+        //buttonProcess.setView(true);
         buttonProcess.setProgressButtonListener(new ProgressButtonListener() {
             @Override
             public void onStartProgress() {
