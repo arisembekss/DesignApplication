@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -26,8 +27,8 @@ import androidx.cardview.widget.CardView;
 import com.dtech.customui.R;
 
 public class MaterialButtonProcess extends LinearLayout /*implements ProgressButtonListener, View.OnClickListener*/ {
-    private CardView button_style_parent;
-    private RelativeLayout button_click_parent, button_root;
+    private RelativeLayout button_click_parent;
+    private CardView button_root;
     private ImageView button_icon;
     private ProgressBar button_progress;
     private TextView button_text;
@@ -87,8 +88,34 @@ public class MaterialButtonProcess extends LinearLayout /*implements ProgressBut
         setType(view);
         /*todo: last activity*/
         if (/*typedValue.resourceId != 0*/this.getBackground() == null) {
+            Log.d("LIB", "init: user not set bg");
+            //setBackgroundroot(getResources().getDrawable(R.drawable.rounded2, null));
+
+            setMBColor(getResources().getColor(android.R.color.holo_green_dark));
+            //button_root.setCardBackgroundColor(getResources().getColor(android.R.color.holo_purple));
+        } else {
             Log.d("LIB", "init: user set bg");
-            setBackgroundroot(getResources().getDrawable(R.drawable.rounded2, null));
+            //int color = Color.TRANSPARENT;
+            Drawable background = this.getBackground();
+
+            //button_root.setBackground(background);
+            if (background instanceof ColorDrawable) {
+                //this.setBackgroundColor(Color.TRANSPARENT);
+                int color = ((ColorDrawable) background).getColor();
+                this.setBackground(null);
+                Log.d("LIB", "init: get colorDrawable->" + color);
+                setMBColor(color);
+                //return;
+            } else {
+                if (background instanceof Drawable) {
+
+                    setBackgroundroot(background);
+                }
+                Log.d("LIB", "init: not get colorDrawable" +background.getState());
+            }  /*else if (background instanceof Drawable) {
+
+            }*/
+
         }
         for (int i=0; i<a.getIndexCount();i++){
             int attr = a.getIndex(i);
@@ -135,7 +162,6 @@ public class MaterialButtonProcess extends LinearLayout /*implements ProgressBut
 
     private void setType(View view) {
         button_root = view.findViewById(R.id.button_root);
-        button_style_parent = view.findViewById(R.id.button_style_parent);
         button_click_parent = view.findViewById(R.id.button_click_parent);
         button_icon = view.findViewById(R.id.button_icon);
         button_progress = view.findViewById(R.id.button_progress);
@@ -155,23 +181,36 @@ public class MaterialButtonProcess extends LinearLayout /*implements ProgressBut
     }
 
     public void setBackgroundColor(ColorStateList color) {
-        button_style_parent.setCardBackgroundColor(/*Color.parseColor(color)*/color);
+        //button_style_parent.setCardBackgroundColor(/*Color.parseColor(color)*/color);
     }
 
     public void setVectorIcon(int iconId) {
         button_icon.setImageResource(iconId);
     }
 
+    public void setMBColor(int color) {
+        button_root.setRadius(dpToPixel(10));
+        button_root.setCardElevation(dpToPixel(10));
+        button_root.setCardBackgroundColor(color);
+    }
+
     public void setBackgroundroot(Drawable resource) {
+        button_root.setCardBackgroundColor(getResources().getColor(android.R.color.transparent));
+        //button_root.setRadius(dpToPixelF(1.0f));
+        button_root.setCardElevation(dpToPixelF(0.0f));
         button_root.setBackground(resource);
     }
 
     public void setRadiusPixel(int radius) {
-        button_style_parent.setRadius(dpToPixel(radius));
+        //button_style_parent.setRadius(dpToPixel(radius));
     }
 
     private int dpToPixel(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    private float dpToPixelF(float dp) {
+        return (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
     public void showToast() {
